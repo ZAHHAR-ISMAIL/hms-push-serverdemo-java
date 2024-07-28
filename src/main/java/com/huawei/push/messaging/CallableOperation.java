@@ -1,6 +1,7 @@
 package com.huawei.push.messaging;
 
 import com.google.common.base.Preconditions;
+import com.huawei.push.utilsApi.ApiFuture;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.concurrent.Callable;

@@ -1,4 +1,4 @@
-package com.huawei.push.messaging;
+package com.huawei.push.utilsApi;
 
 
 import com.google.common.base.Function;
@@ -8,6 +8,8 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.huawei.push.messaging.ListenableFutureToApiFuture;
+
 import java.util.List;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;

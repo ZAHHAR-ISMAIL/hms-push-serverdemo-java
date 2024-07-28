@@ -18,6 +18,7 @@
  */
 package com.huawei.push.messaging;
 
+import com.huawei.push.utilsApi.ApiFuture;
 import org.apache.http.client.HttpClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

@@ -1,4 +1,4 @@
-package com.huawei.push.messaging;
+package com.huawei.push.utilsApi;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;

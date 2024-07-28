@@ -1,4 +1,4 @@
-package com.huawei.push.messaging;
+package com.huawei.push.utilsApi;
 
 @FunctionalInterface
 public interface ApiAsyncFunction<I, O> {

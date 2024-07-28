@@ -23,8 +23,9 @@ import com.huawei.push.message.Message;
 import com.huawei.push.message.TopicMessage;
 import com.huawei.push.model.TopicOperation;
 import com.huawei.push.reponse.SendResponse;
-import com.huawei.push.util.ValidatorUtils;
 
+import com.huawei.push.utilsApi.ApiFuture;
+import com.huawei.push.utilsApi.ApiFutures;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.huawei.push.util.ValidatorUtils.checkArgument;
 
@@ -97,17 +96,15 @@ public class HuaweiMessaging {
     }
 
     //----------------------------
-    // Here we begin
+    // Send Each Implementation
     //---------------------------
 
     public BatchResponse sendEach(@NonNull List<Message> messages) throws HuaweiMesssagingException {
-        return sendEachOp(messages, false).call();
+        return sendEachOp(messages).call();
     }
 
-
-
     private CallableOperation<BatchResponse, HuaweiMesssagingException> sendEachOp(
-            final List<Message> messages, final boolean dryRun) {
+            final List<Message> messages) {
         final List<Message> immutableMessages = ImmutableList.copyOf(messages);
         checkArgument(!immutableMessages.isEmpty(), "messages list must not be empty");
         checkArgument(immutableMessages.size() <= 500,
@@ -118,7 +115,7 @@ public class HuaweiMessaging {
             protected BatchResponse execute() throws HuaweiMesssagingException {
                 List<ApiFuture<SendResponse>> list = new ArrayList<>();
                 for (Message message : immutableMessages) {
-                    ApiFuture<SendResponse> messageId = sendOpForSendResponse(message, dryRun).callAsync(app);
+                    ApiFuture<SendResponse> messageId = sendOpForSendResponse(message, false).callAsync(app);
                     list.add(messageId);
                 }
                 try {
@@ -131,117 +128,16 @@ public class HuaweiMessaging {
         };
     }
 
-
-    // here try to checl .send or .sendMessage // You can compare Firebase how they send message if they use different to .sendMessage
-
-
     private CallableOperation<SendResponse, HuaweiMesssagingException> sendOpForSendResponse(
             final Message message, final boolean dryRun) {
         //checkNotNull(message, "message must not be null");
         final HuaweiMessageClient messagingClient = getMessagingClient();
         return new CallableOperation<SendResponse, HuaweiMesssagingException>() {
-//            @Override
             protected SendResponse execute() throws HuaweiMesssagingException {
-//                try {
-
-                    return  messagingClient.send(message, false, ImplHuaweiTrampolines.getAccessToken(app));
-//                } catch (HuaweiMesssagingException e) {
-//                    return ;
-//                }
+                return messagingClient.send(message, false, ImplHuaweiTrampolines.getAccessToken(app));
             }
         };
     }
-
-
-
-//
-//    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-//
-//    public BatchResponse sendEachOpHms(List<Message> messages, boolean dryRun) throws InterruptedException, ExecutionException {
-//        List<Future<SendMessageResult>> futures = new ArrayList<>();
-//        for (Message message : messages) {
-//            HuaweiMessageFuture future = new HuaweiMessageFuture(message, HuaweiMessageClient, dryRun);
-//            futures.add(executorService.submit(future));
-//        }
-//
-//        List<SendMessageResult> successfulResponses = new ArrayList<>();
-//        List<Exception> errors = new ArrayList<>();
-//        for (Future<SendMessageResult> future : futures) {
-//            try {
-//                successfulResponses.add(future.get());
-//            } catch (ExecutionException e) {
-//                errors.add(e.getCause());
-//            }
-//        }
-//
-//        executorService.shutdown();
-//        return new BatchResponse(successfulResponses, errors);
-//    }
-//
-//
-//    public class HuaweiMessageFuture implements Future<SendMessageResult> {
-//
-//        private final Message message;
-//        private final HuaweiMessageClient HuaweiMessageClient;
-//        private final boolean dryRun;
-//        private SendMessageResult result;
-//        private Exception exception;
-//
-//        public HuaweiMessageFuture(Message message, HuaweiMessageClient HuaweiMessageClient, boolean dryRun) {
-//            this.message = message;
-//            this.HuaweiMessageClient = HuaweiMessageClient;
-//            this.dryRun = dryRun;
-//        }
-//
-//        @Override
-//        public boolean cancel(boolean mayInterruptIfRunning) {
-//            // Implement cancellation logic if needed
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isCancelled() {
-//            // Implement cancellation check logic if needed
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isDone() {
-//            return result != null || exception != null;
-//        }
-//
-//        @Override
-//        public SendMessageResult get() throws InterruptedException, ExecutionException {
-//            if (!isDone()) {
-//                throw new InterruptedException("Future not yet complete");
-//            }
-//            if (exception != null) {
-//                throw new ExecutionException(exception);
-//            }
-//            return result;
-//        }
-//
-//        @Override
-//        public SendMessageResult get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-//            throw new UnsupportedOperationException("get(long, TimeUnit) not supported");
-//        }
-//
-//        public void run() {
-//            try {
-//                if (dryRun) {
-//                    result = new SendMessageResult(message, "Dry Run Successful");
-//                } else {
-//                    String messageId = sendMessage(message); // Replace with actual method
-//                    result = new SendMessageResult(message, messageId);
-//                }
-//            } catch (Exception e) {
-//                exception = e;
-//            }
-//        }
-//    }
-//
-//
-
 
     /**
      * @param topicMessage topicmessage

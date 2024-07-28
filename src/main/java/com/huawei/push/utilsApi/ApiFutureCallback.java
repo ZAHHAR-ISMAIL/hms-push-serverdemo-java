@@ -1,4 +1,4 @@
-package com.huawei.push.messaging;
+package com.huawei.push.utilsApi;
 
 public interface ApiFutureCallback<V> {
     void onFailure(Throwable var1);

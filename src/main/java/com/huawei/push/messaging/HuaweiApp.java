@@ -21,8 +21,9 @@ package com.huawei.push.messaging;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.huawei.push.util.ListenableFuture2ApiFuture;
+import com.huawei.push.utilsApi.ListenableFuture2ApiFuture;
 import com.huawei.push.util.ValidatorUtils;
+import com.huawei.push.utilsApi.ApiFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

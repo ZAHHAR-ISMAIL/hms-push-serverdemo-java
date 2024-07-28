@@ -1,4 +1,4 @@
-package com.huawei.push.messaging;
+package com.huawei.push.utilsApi;
 
 
 import com.google.common.util.concurrent.AbstractFuture;
